@@ -1,38 +1,66 @@
+// app.js - Fixed version
 class AvitoMicro {
     constructor() {
+        console.log('🚀 AvitoMicro constructor called');
         this.accessToken = localStorage.getItem('avito_access_token');
         this.isAuthenticated = !!this.accessToken;
         this.init();
     }
 
     init() {
+        console.log('🔧 Initializing AvitoMicro...');
         this.bindEvents();
         this.checkAuthStatus();
         this.updateUI();
     }
 
     bindEvents() {
-        document.getElementById('loginBtn').addEventListener('click', () => this.handleAuth());
-        document.getElementById('refreshBtn').addEventListener('click', () => this.loadAds());
+        console.log('📌 Binding events...');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        if (loginBtn) {
+            console.log('✅ Login button found, adding event listener');
+            loginBtn.addEventListener('click', () => {
+                console.log('🎯 Login button clicked!');
+                this.handleAuth();
+            });
+        } else {
+            console.error('❌ Login button not found!');
+        }
+
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                console.log('🔄 Refresh button clicked');
+                this.loadAds();
+            });
+        }
         
         this.handleOAuthCallback();
     }
 
     handleAuth() {
+        console.log('🔐 Handling auth...');
         if (this.isAuthenticated) {
+            console.log('👋 Logging out');
             this.logout();
         } else {
+            console.log('🚪 Logging in');
             this.login();
         }
     }
 
     login() {
+        console.log('🔑 Starting OAuth flow...');
         const clientId = 'ZbBX2ouR4ddMtDQsvx9D';
         const redirectUri = encodeURIComponent('https://micro.modyleprojects.ru/oauth-callback.html');
         const authUrl = https://avito.ru/oauth?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri};
         
+        console.log('📍 Redirect URL:', authUrl);
         this.showStatus('Перенаправление в Авито...', 'info');
+        
         setTimeout(() => {
+            console.log('🌐 Redirecting to Avito...');
             window.location.href = authUrl;
         }, 1000);
     }
@@ -93,7 +121,6 @@ class AvitoMicro {
             this.showStatus('Сначала войдите в систему', 'error');
             return;
         }
-
         try {
             this.showStatus('Загружаем объявления...', 'info');
             
@@ -116,14 +143,11 @@ class AvitoMicro {
         const adsList = document.getElementById('adsList');
         
         if (!ads || ads.length === 0) {
-            adsList.innerHTML = 
-                <div class="empty-state">
-                    <p>Объявления не найдены</p>
-                </div>
-            ;
+            adsList.innerHTML = '<div class="empty-state"><p>Объявления не найдены</p></div>';
             return;
         }
-      adsList.innerHTML = ads.map(ad => 
+
+        adsList.innerHTML = ads.map(ad => 
             <div class="ad-item">
                 <div class="ad-title">${ad.title || 'Без названия'}</div>
                 <div class="ad-price">${ad.price ? ad.price + ' руб.' : 'Цена не указана'}</div>
@@ -134,11 +158,7 @@ class AvitoMicro {
 
     clearAds() {
         const adsList = document.getElementById('adsList');
-        adsList.innerHTML = 
-            <div class="empty-state">
-                <p>Войдите в аккаунт, чтобы увидеть ваши объявления</p>
-            </div>
-        ;
+        adsList.innerHTML = '<div class="empty-state"><p>Войдите в аккаунт, чтобы увидеть ваши объявления</p></div>';
     }
 
     updateUI() {
@@ -169,7 +189,20 @@ class AvitoMicro {
     }
 
     showStatus(message, type = 'info') {
+        console.log(📢 Status [${type}]: ${message});
         const statusEl = document.getElementById('authStatus');
         if (statusEl) {
             statusEl.textContent = message;
-            statusEl
+            statusEl.className = status-text status-${type};
+        }
+    }
+}
+
+// Инициализация приложения
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🟢 DOM loaded, initializing app...');
+    window.avitoApp = new AvitoMicro();
+    console.log('✅ App initialized successfully!');
+});
+
+console.log('🟡 app.js loaded, waiting for DOM...');
