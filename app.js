@@ -1,56 +1,87 @@
-// app.js - Исправленная версия
-class AvitoClient {
+// app.js - ТОЛЬКО реальные данные
+class AvitoSearch {
     constructor() {
-        console.log('🟢 AvitoClient created');
-        this.token = localStorage.getItem('avito_token');
         this.init();
     }
 
     init() {
-        console.log('🔧 Initializing...');
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
         
-        const loginBtn = document.getElementById('loginBtn');
-        if (loginBtn) {
-            console.log('✅ Login button found');
-            loginBtn.addEventListener('click', () => {
-                console.log('🎯 Login button clicked');
-                this.login();
+        if (searchBtn && searchInput) {
+            searchBtn.addEventListener('click', () => this.search());
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.search();
             });
-        } else {
-            console.error('❌ Login button not found!');
         }
-        
-        this.checkAuth();
     }
 
-    login() {
-        console.log('🔑 Starting login process...');
+    async search() {
+        const query = document.getElementById('searchInput').value.trim();
+        if (!query) {
+            this.showError('Введите поисковый запрос');
+            return;
+        }
+
+        this.showLoading();
         
-        const clientId = 'ZbBX2ouR4ddMtDQsvx9D';
-        const redirectUri = 'https://avito-micro-uwp-client.vercel.app';
-        
-        console.log('📍 Redirect URI:', redirectUri);
-        
-        // Без encodeURIComponent - просто конкатенация
-        const authUrl = 'https://avito.ru/oauth?client_id=' + clientId + 
-                       '&response_type=code&redirect_uri=' + redirectUri;
-        
-        console.log('🌐 Full auth URL:', authUrl);
-        window.location.href = authUrl;
+        try {
+            const response = await fetch(/api/search?q=${encodeURIComponent(query)});
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'API error');
+            }
+
+            if (data.items && data.items.length > 0) {
+                this.displayItems(data.items);
+            } else {
+                this.showError('По вашему запросу ничего не найдено');
+            }
+        } catch (error) {
+            this.showError(Ошибка: ${error.message});
+        }
     }
 
-    async handleAuthCode(code) {
-        console.log('🔄 Handling auth code:', code);
-        // ... остальной код без изменений
+    displayItems(items) {
+        const container = document.getElementById('adsList');
+        if (!container) return;
+
+        container.innerHTML = items.map(item => 
+            <div class="item">
+                <h3>${this.escapeHtml(item.title)}</h3>
+                <p class="price">${item.price}</p>
+                ${item.url ? <a href="${item.url}" target="_blank">Открыть на Авито</a> : ''}
+            </div>
+        ).join('');
     }
 
-    // ... остальные методы без изменений
+    showLoading() {
+        const container = document.getElementById('adsList');
+        if (container) {
+            container.innerHTML = '<p>Ищем реальные объявления на Авито...</p>';
+        }
+    }
+
+    showError(message) {
+        const container = document.getElementById('adsList');
+        if (container) {
+            container.innerHTML = <p class="error">${message}</p>;
+        }
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 }
 
-// Инициализация
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM loaded, starting app...');
-    new AvitoClient();
+// Запуск
+document.addEventListener('DOMContentLoaded', () => {
+    new AvitoSearch();
 });
-
-console.log('📄 app.js loaded');
