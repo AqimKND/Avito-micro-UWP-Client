@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avito Web Client</title>
+    <title>Avito Search - Поиск товаров</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🛍️ Avito Web</h1>
-            <button id="loginBtn" class="btn">Войти в Авито</button>
+        <header class="header">
+            <h1>🔍 Avito Search</h1>
+            <p>Поиск товаров на Авито</p>
         </header>
-        
-        <main>
-            <div id="adsList" class="ads-container">
-                <p>Войдите чтобы увидеть объявления</p>
-            </div>
+
+        <main class="main">
+            <!-- Поисковая строка -->
+            <section class="card">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Что ищем? Например: iPhone, диван, велосипед...">
+                    <button id="searchBtn" class="btn btn-primary">Найти на Авито</button>
+                </div>
+            </section>
+
+            <!-- Результаты -->
+            <section class="card">
+                <h2>Найденные товары</h2>
+                <div id="adsList" class="ads-list">
+                    <div class="empty-state">
+                        <p>Введите запрос для поиска товаров</p>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
