@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Avito OAuth Callback</title>
-</head>
-<body>
+    <title>Avito Auth</title>
     <script>
+        // Получаем код из URL
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get('code');
         
         if (authCode) {
-            window.location.href = "ms-app://avito?code=" + authCode;
+            // ПЕРЕНАПРАВЛЯЕМ НА НАШ САЙТ С КОДОМ
+            window.location.href = 'https://avito-micro-uwp-client.vercel.app?code=' + authCode;
+        } else {
+            document.body.innerHTML = '<h1>Ошибка: не получен код</h1>';
         }
     </script>
+</head>
+<body>
+    <p>Завершение авторизации...</p>
 </body>
 </html>
