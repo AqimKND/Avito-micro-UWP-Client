@@ -1,7 +1,0 @@
-﻿<Application
-    x:Class="Avito_micro_.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Avito_micro_">
-
-</Application>
