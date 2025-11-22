@@ -1,4 +1,4 @@
-// app.js - ТОЛЬКО реальные данные
+// app.js - Avito Search (только поиск)
 class AvitoSearch {
     constructor() {
         this.init();
@@ -23,7 +23,7 @@ class AvitoSearch {
     async search() {
         const query = document.getElementById('searchInput').value.trim();
         if (!query) {
-            this.showError('Введите поисковый запрос');
+            this.showMessage('Введите поисковый запрос', 'error');
             return;
         }
 
@@ -33,51 +33,40 @@ class AvitoSearch {
             const response = await fetch(/api/search?q=${encodeURIComponent(query)});
             const data = await response.json();
             
-            if (!response.ok) {
-                throw new Error(data.error || 'API error');
-            }
-
             if (data.items && data.items.length > 0) {
-                this.displayItems(data.items);
+                this.displayItems(data.items, query);
             } else {
-                this.showError('По вашему запросу ничего не найдено');
+                this.showMessage('По вашему запросу ничего не найдено', 'info');
             }
         } catch (error) {
-            this.showError(Ошибка: ${error.message});
+            this.showMessage('Ошибка поиска. Попробуйте другой запрос', 'error');
         }
     }
 
-    displayItems(items) {
+    displayItems(items, query) {
         const container = document.getElementById('adsList');
-        if (!container) return;
-
-        container.innerHTML = items.map(item => 
-            <div class="item">
-                <h3>${this.escapeHtml(item.title)}</h3>
-                <p class="price">${item.price}</p>
-                ${item.url ? <a href="${item.url}" target="_blank">Открыть на Авито</a> : ''}
+        container.innerHTML = 
+            <div class="search-info">
+                <p>Найдено ${items.length} товаров по запросу: "<strong>${query}</strong>"</p>
             </div>
-        ).join('');
+            ${items.map(item => 
+                <div class="item">
+                    <h3>${item.title}</h3>
+                    <p class="price">${item.price}</p>
+                    ${item.url ? <a href="${item.url}" target="_blank" class="avito-link">Открыть на Авито</a> : ''}
+                </div>
+            ).join('')}
+        ;
     }
 
     showLoading() {
         const container = document.getElementById('adsList');
-        if (container) {
-            container.innerHTML = '<p>Ищем реальные объявления на Авито...</p>';
-        }
+        container.innerHTML = '<div class="loading"><p>🔍 Ищем товары на Авито...</p></div>';
     }
 
-    showError(message) {
+    showMessage(message, type) {
         const container = document.getElementById('adsList');
-        if (container) {
-            container.innerHTML = <p class="error">${message}</p>;
-        }
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        container.innerHTML = <div class="message ${type}"><p>${message}</p></div>;
     }
 }
 
