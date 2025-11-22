@@ -3,55 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avito(micro) - Web Client</title>
+    <title>Avito Web Client</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <h1>🛍️ Avito(micro)</h1>
-                <p>web-клиент для Авито</p>
-            </div>
+        <header>
+            <h1>🛍️ Avito Web</h1>
+            <button id="loginBtn" class="btn">Войти в Авито</button>
         </header>
-
-        <main class="main">
-            <section class="card">
-                <h2>Авторизация</h2>
-                <button id="loginBtn" class="btn btn-primary">
-                    Войти через Авито
-                </button>
-                <div id="authStatus" class="status-text"></div>
-            </section>
-
-            <section class="card">
-                <div class="card-header">
-                    <h2>Мои объявления</h2>
-                    <button id="refreshBtn" class="btn btn-secondary" disabled>
-                        Обновить
-                    </button>
-                </div>
-                <div id="adsList" class="ads-list">
-                    <div class="empty-state">
-                        <p>Войдите в аккаунт, чтобы увидеть ваши объявления</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="card">
-                <h2>Информация</h2>
-                <div class="info-text">
-                    <p>Этот клиент показывает ваши объявления из Авито через официальное API.</p>
-                    <p>Все данные защищены и не сохраняются на сторонних серверах.</p>
-                </div>
-            </section>
+        
+        <main>
+            <div id="adsList" class="ads-container">
+                <p>Войдите чтобы увидеть объявления</p>
+            </div>
         </main>
-
-        <footer class="footer">
-            <p>Avito(micro) Web Client</p>
-        </footer>
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>
