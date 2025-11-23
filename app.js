@@ -1,4 +1,4 @@
-// app.js - Используем simple-proxy для названий и картинок
+// app.js - Исправленная версия
 class SimpleAvito {
     constructor() {
         this.init();
@@ -26,51 +26,61 @@ class SimpleAvito {
     }
 
     async search() {
-        const query = document.getElementById('searchInput').value.trim() || 'телефон';
+        const query = document.getElementById('searchInput').value.trim();
+        if (!query) {
+            this.showMessage('Введите запрос для поиска');
+            return;
+        }
+        
         this.showLoading();
         
         try {
-            // Используем simple-proxy вместо search
-            const response = await fetch(/api/simple-proxy?q=${encodeURIComponent(query)});
+            const response = await fetch('/api/simple-proxy?q=' + encodeURIComponent(query));
             const data = await response.json();
             
             if (data.items && data.items.length > 0) {
                 this.showResults(data.items, query);
             } else {
-                this.showMessage('Ничего не найдено');
+                this.showMessage('Ничего не найдено по запросу: ' + query);
             }
         } catch (error) {
-            this.showMessage('Ошибка поиска');
+            this.showMessage('Ошибка поиска: ' + error.message);
         }
     }
 
     showResults(items, query) {
         const container = document.getElementById('adsList');
-        let html = <div class="search-info"><p>Найдено: ${items.length} товаров</p></div>;
+        let html = '<div class="search-info"><p>Найдено товаров: ' + items.length + '</p></div>';
         
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            html += 
-                <div class="item-simple">
-                    ${item.image ? <img src="${item.image}" alt="${item.title}" class="item-image"> : ''}
-                    <div class="item-title">${item.title}</div>
-                </div>
-            ;
+            const imageHtml = item.image ? '<img src="' + item.image + '" alt="" class="item-image">' : '';
+            
+            html += '<div class="item-simple">' +
+                    imageHtml +
+                    '<div class="item-title">' + item.title + '</div>' +
+                    '</div>';
         }
         
         container.innerHTML = html;
     }
 
     showLoading() {
-        document.getElementById('adsList').innerHTML = '<p>Поиск...</p>';
+        const container = document.getElementById('adsList');
+        if (container) {
+            container.innerHTML = '<p>🔍 Поиск на Авито...</p>';
+        }
     }
 
     showMessage(text) {
-        document.getElementById('adsList').innerHTML = <p>${text}</p>;
+        const container = document.getElementById('adsList');
+        if (container) {
+            container.innerHTML = '<p>' + text + '</p>';
+        }
     }
 }
 
-// Запуск
+// Запуск при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     new SimpleAvito();
 });
