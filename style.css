@@ -1,9 +1,13 @@
+/* Добавляем в конец style.css */
+
 .item-simple {
     border: 1px solid #ddd;
     margin: 10px 0;
     padding: 10px;
     display: flex;
     align-items: center;
+    border-radius: 8px;
+    background: white;
 }
 
 .item-image {
@@ -17,4 +21,12 @@
 .item-title {
     flex: 1;
     font-weight: bold;
+    font-size: 14px;
+}
+
+.search-info {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
 }
