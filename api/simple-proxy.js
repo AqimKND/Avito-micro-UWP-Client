@@ -1,29 +1,26 @@
-// /api/simple-proxy.js - Простой прокси для названий и картинок
+// /api/simple-proxy.js - РЕАЛЬНЫЕ данные, 4 карточки
 export default async function handler(req, res) {
   const { q = 'телефон' } = req.query;
   
-  console.log('🔄 Simple proxy search:', q);
+  console.log('🎯 Real simple search:', q);
   
   try {
-    // Получаем HTML Авито
-    const response = await fetch(https://www.avito.ru/rossiya?q=${encodeURIComponent(q)}, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      }
-    });
-
+    // Реальный запрос к Авито
+    const response = await fetch('https://www.avito.ru/rossiya?q=' + encodeURIComponent(q));
+    
     if (!response.ok) {
-      return res.status(500).json({ items: [] });
+      return res.json({ items: [] });
     }
 
     const html = await response.text();
     const items = [];
     
-    // ПРОСТОЙ парсинг - только названия и картинки
-    let index = 0;
-    while (index < html.length && items.length < 10) {
-      // Ищем заголовок
-      const titleStart = html.indexOf('<h3', index);
+    // ПРОСТЕЙШИЙ парсинг - только 4 первых результата
+    let position = 0;
+    
+    for (let i = 0; i < 4; i++) {
+      // Ищем следующий заголовок
+      const titleStart = html.indexOf('<h3', position);
       if (titleStart === -1) break;
       
       const titleEnd = html.indexOf('</h3>', titleStart);
@@ -42,19 +39,19 @@ export default async function handler(req, res) {
       
       if (titleMatch && srcMatch) {
         items.push({
-          title: titleMatch[1].trim(),
-          image: srcMatch[1].startsWith('http') ? srcMatch[1] : https:${srcMatch[1]}
+          title: titleMatch[1].trim().substring(0, 50), // обрезаем длинные названия
+          image: srcMatch[1].startsWith('http') ? srcMatch[1] : 'https:' + srcMatch[1]
         });
       }
       
-      index = imgEnd;
+      position = imgEnd;
     }
     
-    console.log('✅ Found items:', items.length);
-    res.json({ items });
+    console.log('✅ Real items found:', items.length);
+    res.json({ items: items });
     
   } catch (error) {
-    console.error('❌ Proxy error:', error);
+    console.error('❌ Error:', error.message);
     res.json({ items: [] });
   }
 }
