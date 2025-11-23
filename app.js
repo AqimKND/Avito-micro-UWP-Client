@@ -1,4 +1,4 @@
-// app.js - Только названия и картинки
+// app.js - Используем simple-proxy для названий и картинок
 class SimpleAvito {
     constructor() {
         this.init();
@@ -30,6 +30,7 @@ class SimpleAvito {
         this.showLoading();
         
         try {
+            // Используем simple-proxy вместо search
             const response = await fetch(/api/simple-proxy?q=${encodeURIComponent(query)});
             const data = await response.json();
             
