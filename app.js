@@ -1,4 +1,4 @@
-// app.js - Исправленная версия
+// app.js - Исправленная версия для отображения карточек
 class SimpleAvito {
     constructor() {
         this.init();
@@ -38,6 +38,8 @@ class SimpleAvito {
             const response = await fetch('/api/simple-proxy?q=' + encodeURIComponent(query));
             const data = await response.json();
             
+            console.log('📦 Received data:', data); // Добавим логирование
+            
             if (data.items && data.items.length > 0) {
                 this.showResults(data.items, query);
             } else {
@@ -50,15 +52,18 @@ class SimpleAvito {
 
     showResults(items, query) {
         const container = document.getElementById('adsList');
+        
         let html = '<div class="search-info"><p>Найдено товаров: ' + items.length + '</p></div>';
         
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            const imageHtml = item.image ? '<img src="' + item.image + '" alt="" class="item-image">' : '';
+            const imageHtml = item.image ? 
+                '<img src="' + item.image + '" alt="" class="item-image">' : 
+                '<div class="no-image">📷</div>';
             
-            html += '<div class="item-simple">' +
-                    imageHtml +
-                    '<div class="item-title">' + item.title + '</div>' +
+            html += '<div class="item-card">' +
+                    '<div class="item-image-container">' + imageHtml + '</div>' +
+                    '<div class="item-title">' + (item.title || 'Без названия') + '</div>' +
                     '</div>';
         }
         
