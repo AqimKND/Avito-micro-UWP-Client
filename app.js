@@ -1,120 +1,75 @@
-// app.js - Avito Search (упрощённый)
-console.log('🟢 Avito Search loaded');
+// app.js - Только названия и картинки
+class SimpleAvito {
+    constructor() {
+        this.init();
+    }
 
-function AvitoSearch() {
-    this.init();
+    init() {
+        this.setupEvents();
+    }
+
+    setupEvents() {
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        
+        if (searchBtn && searchInput) {
+            const self = this;
+            
+            searchBtn.addEventListener('click', function() {
+                self.search();
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') self.search();
+            });
+        }
+    }
+
+    async search() {
+        const query = document.getElementById('searchInput').value.trim() || 'телефон';
+        this.showLoading();
+        
+        try {
+            const response = await fetch(/api/simple-proxy?q=${encodeURIComponent(query)});
+            const data = await response.json();
+            
+            if (data.items && data.items.length > 0) {
+                this.showResults(data.items, query);
+            } else {
+                this.showMessage('Ничего не найдено');
+            }
+        } catch (error) {
+            this.showMessage('Ошибка поиска');
+        }
+    }
+
+    showResults(items, query) {
+        const container = document.getElementById('adsList');
+        let html = <div class="search-info"><p>Найдено: ${items.length} товаров</p></div>;
+        
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            html += 
+                <div class="item-simple">
+                    ${item.image ? <img src="${item.image}" alt="${item.title}" class="item-image"> : ''}
+                    <div class="item-title">${item.title}</div>
+                </div>
+            ;
+        }
+        
+        container.innerHTML = html;
+    }
+
+    showLoading() {
+        document.getElementById('adsList').innerHTML = '<p>Поиск...</p>';
+    }
+
+    showMessage(text) {
+        document.getElementById('adsList').innerHTML = <p>${text}</p>;
+    }
 }
 
-AvitoSearch.prototype.init = function() {
-    console.log('🔧 Initializing search...');
-    this.setupEvents();
-};
-
-AvitoSearch.prototype.setupEvents = function() {
-    var searchBtn = document.getElementById('searchBtn');
-    var searchInput = document.getElementById('searchInput');
-    
-    if (searchBtn && searchInput) {
-        var self = this;
-        
-        searchBtn.addEventListener('click', function() {
-            self.performSearch();
-        });
-        
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                self.performSearch();
-            }
-        });
-        
-        console.log('✅ Events setup complete');
-    } else {
-        console.error('❌ Search elements not found');
-    }
-};
-
-AvitoSearch.prototype.performSearch = function() {
-    var query = document.getElementById('searchInput').value.trim();
-    
-    if (!query) {
-        this.showMessage('Введите запрос для поиска');
-        return;
-    }
-    
-    console.log('🔍 Searching for:', query);
-    this.showLoading();
-    
-    var self = this;
-    
-    // XMLHttpRequest для совместимости
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/search?q=' + encodeURIComponent(query), true);
-    
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                console.log('📦 Received data:', data);
-                
-                if (data.items && data.items.length > 0) {
-                    self.displayResults(data.items, query);
-                } else {
-                    self.showMessage('Ничего не найдено по запросу: ' + query);
-                }
-            } catch (e) {
-                console.error('JSON parse error:', e);
-                self.showMessage('Ошибка обработки данных');
-            }
-        } else {
-            self.showMessage('Ошибка загрузки: ' + xhr.status);
-        }
-    };
-    
-    xhr.onerror = function() {
-        self.showMessage('Ошибка сети');
-    };
-    
-    xhr.send();
-};
-
-AvitoSearch.prototype.displayResults = function(items, query) {
-    var container = document.getElementById('adsList');
-    
-    if (!container) {
-        console.error('❌ adsList container not found');
-        return;
-    }
-    
-    var html = '<div class="search-info"><p>Найдено товаров: ' + items.length + '</p></div>';
-    
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        html += '<div class="item">' +
-                '<h3>' + (item.title || 'Без названия') + '</h3>' +
-                '<p class="price">' + (item.price || 'Цена не указана') + '</p>' +
-                '</div>';
-    }
-    
-    container.innerHTML = html;
-    console.log('✅ Results displayed');
-};
-
-AvitoSearch.prototype.showLoading = function() {
-    var container = document.getElementById('adsList');
-    if (container) {
-        container.innerHTML = '<div class="loading"><p>🔍 Поиск на Авито...</p></div>';
-    }
-};
-
-AvitoSearch.prototype.showMessage = function(message) {
-    var container = document.getElementById('adsList');
-    if (container) {
-        container.innerHTML = '<div class="message"><p>' + message + '</p></div>';
-    }
-};
-
-// Запуск при загрузке страницы
+// Запуск
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Starting AvitoSearch...');
-    new AvitoSearch();
+    new SimpleAvito();
 });
