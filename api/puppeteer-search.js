@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
     console.log('🔍 Navigating to Avito...');
     
     // Переходим на Авито
-    await page.goto(https://www.avito.ru/rossiya?q=${encodeURIComponent(q)}, {
+    await page.goto(https://www.avito.ru/rossiya?q=${encodeURIComponent(q)}', {
       waitUntil: 'networkidle2',
       timeout: 30000
     });
