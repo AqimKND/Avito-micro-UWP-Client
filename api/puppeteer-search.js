@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
   try {
     // Подключаемся к облачному Chrome с ТВОИМ КЛЮЧОМ
     browser = await puppeteer.connect({
-      browserWSEndpoint: 'wss://chrome.browserless.io?token=2TTxjLh4HvCzR6E26cf97908c661c69dee073776175753ae9'
+      browserWSEndpoint: 'wss://production-sfo.browserless.io?token=2TTxjLh4HvCzR6E26cf97908c661c69dee073776175753ae9'
     });
     
     const page = await browser.newPage();
