@@ -22,8 +22,9 @@ module.exports = async function handler(req, res) {
     
     console.log('🔍 Navigating to Avito...');
     
-    // Переходим на Авито (ИСПРАВЛЕНА СТРОКА!)
-    await page.goto(https://www.avito.ru/rossiya?q=${encodeURIComponent(q)}`, {
+    // ПРОСТАЯ КОНКАТЕНАЦИЯ вместо шаблонной строки
+    const avitoUrl = 'https://www.avito.ru/rossiya?q=' + encodeURIComponent(q);
+    await page.goto(avitoUrl, {
       waitUntil: 'networkidle2',
       timeout: 30000
     });
@@ -36,20 +37,22 @@ module.exports = async function handler(req, res) {
     console.log('📦 Items found, extracting data...');
     
     // Получаем данные товаров
-    const items = await page.evaluate(() => {
-      const itemElements = Array.from(document.querySelectorAll('[data-marker="item"]')).slice(0, 4);
+    const items = await page.evaluate(function() {
+      var itemElements = Array.from(document.querySelectorAll('[data-marker="item"]')).slice(0, 4);
       
-      return itemElements.map(item => {
-        const titleEl = item.querySelector('h3');
-        const imgEl = item.querySelector('img');
-        const priceEl = item.querySelector('[itemprop="price"]');
+      return itemElements.map(function(item) {
+        var titleEl = item.querySelector('h3');
+        var imgEl = item.querySelector('img');
+        var priceEl = item.querySelector('[itemprop="price"]');
         
         return {
           title: titleEl ? titleEl.innerText.trim() : 'Название не указано',
           image: imgEl ? imgEl.src : null,
           price: priceEl ? priceEl.getAttribute('content') : 'Цена не указана'
         };
-      }).filter(item => item.title !== 'Название не указано');
+      }).filter(function(item) {
+        return item.title !== 'Название не указано';
+      });
     });
     
     console.log('🎉 Success! Found items:', items.length);
