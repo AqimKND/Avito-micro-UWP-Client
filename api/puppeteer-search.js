@@ -1,5 +1,6 @@
 // /api/puppeteer-search.js
 const puppeteer = require('puppeteer');
+const chromium = require('@sparticuz/chromium');
 
 module.exports = async function handler(req, res) {
   const { q = 'телефон' } = req.query;
@@ -9,10 +10,12 @@ module.exports = async function handler(req, res) {
   let browser;
   
   try {
-    // Запускаем реальный Chrome
+    // Запускаем Chrome с правильной конфигурацией для Vercel
     browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
     
     const page = await browser.newPage();
