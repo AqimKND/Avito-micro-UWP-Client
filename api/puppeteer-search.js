@@ -1,7 +1,7 @@
 // /api/puppeteer-search.js
 const puppeteer = require('puppeteer');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const { q = 'телефон' } = req.query;
   
   console.log('🎯 Puppeteer search for:', q);
