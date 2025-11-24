@@ -1,31 +1,26 @@
-// /api/puppeteer-search.js
+// /api/puppeteer-search.js - Browserless версия
 const puppeteer = require('puppeteer');
-const chromium = require('@sparticuz/chromium');
 
 module.exports = async function handler(req, res) {
   const { q = 'телефон' } = req.query;
   
-  console.log('🎯 Puppeteer search for:', q);
+  console.log('🎯 Browserless search for:', q);
   
   let browser;
   
   try {
-    // Запускаем Chrome с правильной конфигурацией для Vercel
-    browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+    // Подключаемся к облачному Chrome
+    browser = await puppeteer.connect({
+      browserWSEndpoint: 'wss://chrome.browserless.io?token='
     });
     
     const page = await browser.newPage();
     
-    // Настраиваем User-Agent как мобильный браузер
+    // Настраиваем User-Agent
     await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15');
     
     console.log('🔍 Navigating to Avito...');
     
-    // ПРОСТАЯ КОНКАТЕНАЦИЯ вместо шаблонной строки
     const avitoUrl = 'https://www.avito.ru/rossiya?q=' + encodeURIComponent(q);
     await page.goto(avitoUrl, {
       waitUntil: 'networkidle2',
@@ -34,12 +29,10 @@ module.exports = async function handler(req, res) {
     
     console.log('✅ Page loaded, waiting for items...');
     
-    // Ждём появления товаров (максимум 10 секунд)
     await page.waitForSelector('[data-marker="item"]', { timeout: 10000 });
     
     console.log('📦 Items found, extracting data...');
     
-    // Получаем данные товаров
     const items = await page.evaluate(function() {
       var itemElements = Array.from(document.querySelectorAll('[data-marker="item"]')).slice(0, 4);
       
@@ -66,7 +59,7 @@ module.exports = async function handler(req, res) {
     });
     
   } catch (error) {
-    console.error('❌ Puppeteer error:', error);
+    console.error('❌ Browserless error:', error);
     res.status(500).json({ 
       success: false,
       error: error.message,
