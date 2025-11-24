@@ -1,4 +1,4 @@
-// /api/puppeteer-search.js - Browserless версия
+// /api/puppeteer-search.js - ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
 const puppeteer = require('puppeteer');
 
 module.exports = async function handler(req, res) {
@@ -9,9 +9,9 @@ module.exports = async function handler(req, res) {
   let browser;
   
   try {
-    // Подключаемся к облачному Chrome
+    // Подключаемся к облачному Chrome с ТВОИМ КЛЮЧОМ
     browser = await puppeteer.connect({
-      browserWSEndpoint: 'wss://chrome.browserless.io?token='
+      browserWSEndpoint: 'wss://chrome.browserless.io?token=2TTxjLh4HvCzR6E26cf97908c661c69dee073776175753ae9'
     });
     
     const page = await browser.newPage();
