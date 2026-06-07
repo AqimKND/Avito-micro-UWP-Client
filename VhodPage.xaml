@@ -1,0 +1,50 @@
+﻿<Page
+    x:Class="AvitoMicro.VhodPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AvitoMicro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Image Source="Assets/PanoramaBackground.jpg" Stretch="UniformToFill" Opacity="0.5"/>
+        <Button Click="Skip_Click" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top" 
+                Margin="0,15,15,0" 
+                Background="#00000000" 
+                BorderThickness="0"
+                Width="48" 
+                Height="48">
+            <Image Source="Assets/Close.png" Width="24" Height="24" Stretch="Uniform" Opacity="0.7"/>
+        </Button>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,100,0,0" Padding="30,0">
+            <TextBlock Text="Добро пожаловать!" 
+                       FontSize="36" 
+                       FontWeight="Light" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,15"/>
+            <TextBlock Text="Войдите в аккаунт Avito, чтобы открыть персональные объявления и рекомендации по нраву, или же нажмите крестик, чтобы войти без аккаунта." 
+                       FontSize="15" 
+                       Opacity="0.6" 
+                       TextWrapping="Wrap" 
+                       TextAlignment="Center" 
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,80">
+            <TextBlock Text="Войти с помощью" 
+                       FontSize="14" 
+                       Opacity="0.5" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,15"/>
+            <Button Click="OkLogin_Click" 
+                    Background="#00000000" 
+                    BorderThickness="0" 
+                    HorizontalAlignment="Center">
+                <Image Source="Assets/ok.png" Width="50" Height="50" Stretch="UniformToFill"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Page>
